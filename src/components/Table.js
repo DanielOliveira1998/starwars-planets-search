@@ -1,15 +1,32 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import { DataPlanets } from '../context/DataPlanets';
 
 export default function Table() {
   const { planets } = useContext(DataPlanets);
+  const [search, setSearch] = useState('');
 
-  // useEffect(() => {
-  //   fetchDataAndSetState();
-  // }, []);
-  console.log(planets);
+  // const handleChange = ({ target }) => {
+  //   const { name, value } = target;
+  //   setSearch({
+  //     ...search,
+  //     [name]: value,
+  //   });
+  // };
+
+  const searchFilter = search ? planets
+    .filter((planet) => planet.name.includes(search)) : planets;
+
+  console.log(searchFilter);
+
   return (
     <div>
+      <input
+        type="text"
+        data-testid="name-filter"
+        name="searchFilter"
+        value={ search }
+        onChange={ ({ target }) => setSearch(target.value) }
+      />
       <table>
         <thead>
           <tr>
@@ -29,7 +46,7 @@ export default function Table() {
           </tr>
         </thead>
         <tbody>
-          {planets && planets.map((planet) => (
+          {planets && searchFilter.map((planet) => (
             <tr key={ planet.name }>
               <td>{planet.name}</td>
               <td>{planet.rotation_period}</td>
