@@ -76,7 +76,7 @@ function DataProvider({ children }) {
   };
 
   useEffect(() => {
-    const filter = filtersList.reduce((acc, curr) => [
+    const filter = filtersList.reduce((_acc, curr) => [
       // ...acc,
       ...combinedFilterFunc(curr, curr.column),
     ], []);

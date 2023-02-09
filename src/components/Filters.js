@@ -1,18 +1,24 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import { DataPlanets } from '../context/DataPlanets';
 
 export default function Filters() {
-  const [columnValue, setColumnValue] = useState([
-    'population',
-    'orbital_period',
-    'diameter',
-    'rotation_period',
-    'surface_water']);
-  const [operatorValue, setOperatorValue] = useState([
-    'maior que',
-    'menor que',
-    'igual a',
-  ]);
+  const [columnValue, setColumnValue] = useState([]);
+  const [operatorValue, setOperatorValue] = useState([]);
+
+  useEffect(() => {
+    setColumnValue([
+      'population',
+      'orbital_period',
+      'diameter',
+      'rotation_period',
+      'surface_water']);
+    setOperatorValue([
+      'maior que',
+      'menor que',
+      'igual a',
+    ]);
+  }, []);
+
   const { search, handleSearch, handleColumn,
     handleNumberValue, handleOperator, setFiltersList, column,
     operator,
