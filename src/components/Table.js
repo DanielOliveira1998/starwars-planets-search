@@ -3,9 +3,6 @@ import { DataPlanets } from '../context/DataPlanets';
 
 export default function Table() {
   const { planets, tableContent } = useContext(DataPlanets);
-
-  // const searchFilter = filter ? planets
-  //   .filter((planet) => planet.name.includes(search)) : planets;
   const table = tableContent.length > 0 ? tableContent : planets;
   return (
     <div>

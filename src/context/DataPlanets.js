@@ -1,6 +1,5 @@
 import { createContext, useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import userEvent from '@testing-library/user-event';
 
 export const DataPlanets = createContext();
 
@@ -8,6 +7,7 @@ function DataProvider({ children }) {
   const [isLoading, setIsLoading] = useState(false);
   const [planets, setPlanets] = useState([]);
   const [filtersList, setFiltersList] = useState([]);
+  const [combinationFilter, setCombinationFilter] = useState([]);
   const [search, setSearch] = useState('');
   const [column, setColumn] = useState('population');
   const [operator, setOperator] = useState('maior que');
@@ -45,20 +45,45 @@ function DataProvider({ children }) {
     fetchDataAndSetState();
   }, []);
 
-  useEffect(() => {
-    setFiltersList([...filtersList, {
-      search,
-      column,
-      operator,
-      numberValue,
-    }]);
-  }, [search, column, operator, numberValue]);
+  const combinedFilterFunc = (acc, curr, key) => {
+    if (curr.operator === 'maior que') {
+      acc = planets.filter((planet) => planet[key] > curr.numberValue);
+    }
+    if (curr.operator === 'menor que') {
+      acc = planets.filter((planet) => planet[key] < curr.numberValue);
+    }
+    if (curr.operator === 'igual a') {
+      acc = planets.filter((planet) => planet[key] === curr.numberValue);
+    }
+  };
 
   useEffect(() => {
-    const filters = planets
-      .filter((planet) => planet.name.includes(search));
+    const filter = filtersList.length > 0 && filtersList.reduce((acc, curr) => {
+      switch (curr.column) {
+      case 'population':
+        return combinedFilterFunc(acc, curr, 'population');
+      case 'orbital_period':
+        return combinedFilterFunc(acc, curr, 'orbital_period');
+      case 'diameter':
+        return combinedFilterFunc(acc, curr, 'diameter');
+      case 'rotation_period':
+        return combinedFilterFunc(acc, curr, 'rotation_period');
+      case 'surface_water':
+        return combinedFilterFunc(acc, curr, 'surface_water');
+      default:
+        return tableContent;
+      }
+    });
+    setCombinationFilter(filter);
+  }, [column, operator, numberValue]);
+
+  useEffect(() => {
+    const filters = combinationFilter.length > 0 ? combinationFilter
+      .filter((planet) => planet.name.includes(search))
+      : planets
+        .filter((planet) => planet.name.includes(search));
     setTableContent(filters);
-  }, [filtersList]);
+  }, [search]);
 
   return (
     <DataPlanets.Provider
@@ -66,7 +91,17 @@ function DataProvider({ children }) {
         isLoading,
         search,
         handleSearch,
-        tableContent } }
+        tableContent,
+        handleColumn,
+        handleNumberValue,
+        handleOperator,
+        setFiltersList,
+        filtersList,
+        column,
+        operator,
+        numberValue,
+        combinationFilter,
+      } }
     >
       {children}
     </DataPlanets.Provider>
