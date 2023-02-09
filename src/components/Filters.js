@@ -1,7 +1,18 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import { DataPlanets } from '../context/DataPlanets';
 
 export default function Filters() {
+  const [columnValue, setColumnValue] = useState([
+    'population',
+    'orbital_period',
+    'diameter',
+    'rotation_period',
+    'surface_water']);
+  const [operatorValue, setOperatorValue] = useState([
+    'maior que',
+    'menor que',
+    'igual a',
+  ]);
   const { search, handleSearch, handleColumn,
     handleNumberValue, handleOperator, setFiltersList, column,
     operator,
@@ -26,11 +37,9 @@ export default function Filters() {
           data-testid="column-filter"
           onChange={ (e) => handleColumn(e) }
         >
-          <option value="population">população</option>
-          <option value="orbital_period">Translação</option>
-          <option value="diameter">Diâmetro</option>
-          <option value="rotation_period">Rotação</option>
-          <option value="surface_water">Superfície de água</option>
+          {columnValue.map((item, index) => (
+            <option value={ item } key={ index }>{item}</option>
+          ))}
         </select>
       </label>
       <label htmlFor="operador">
@@ -41,15 +50,16 @@ export default function Filters() {
           data-testid="comparison-filter"
           onChange={ (e) => handleOperator(e) }
         >
-          <option value="maior que">Maior que</option>
-          <option value="menor que">Menor que</option>
-          <option value="igual a">Igual a</option>
+          {operatorValue.map((item, index) => (
+            <option value={ item } key={ index }>{item}</option>
+          ))}
         </select>
       </label>
       <input
         type="text"
         placeholder="valor"
         data-testid="value-filter"
+        value={ numberValue }
         onChange={ (e) => handleNumberValue(e) }
       />
       <button

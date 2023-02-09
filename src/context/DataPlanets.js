@@ -11,7 +11,7 @@ function DataProvider({ children }) {
   const [search, setSearch] = useState('');
   const [column, setColumn] = useState('population');
   const [operator, setOperator] = useState('maior que');
-  const [numberValue, setNumberValue] = useState(null);
+  const [numberValue, setNumberValue] = useState('0');
   const [tableContent, setTableContent] = useState([]);
 
   const fetchDataAndSetState = async () => {
@@ -45,45 +45,56 @@ function DataProvider({ children }) {
     fetchDataAndSetState();
   }, []);
 
-  const combinedFilterFunc = (acc, curr, key) => {
+  const combinedFilterFunc = (curr, key) => {
     if (curr.operator === 'maior que') {
-      acc = planets.filter((planet) => planet[key] > curr.numberValue);
+      return (combinationFilter.length === 0
+        ? planets.filter((planet) => Number(planet[key]) > Number(curr.numberValue)
+      && planet[key] !== 'unknown')
+        : combinationFilter.filter(
+          (planet) => NUmber(planet[key]) > Number(curr.numberValue)
+      && planet[key] !== 'unknown',
+        ));
     }
     if (curr.operator === 'menor que') {
-      acc = planets.filter((planet) => planet[key] < curr.numberValue);
+      return (combinationFilter.length === 0
+        ? planets.filter((planet) => Number(planet[key]) < Number(curr.numberValue)
+      && planet[key] !== 'unknown')
+        : combinationFilter.filter(
+          (planet) => Number(planet[key]) < Number(curr.numberValue)
+      && planet[key] !== 'unknown',
+        ));
     }
     if (curr.operator === 'igual a') {
-      acc = planets.filter((planet) => planet[key] === curr.numberValue);
+      return (combinationFilter.length === 0
+        ? planets.filter((planet) => Number(planet[key]) === Number(curr.numberValue)
+      && planet[key] !== 'unknown')
+        : combinationFilter.filter(
+          (planet) => Number(planet[key]) === Number(curr.numberValue)
+      && planet[key] !== 'unknown',
+        ));
     }
   };
 
   useEffect(() => {
-    const filter = filtersList.length > 0 && filtersList.reduce((acc, curr) => {
-      switch (curr.column) {
-      case 'population':
-        return combinedFilterFunc(acc, curr, 'population');
-      case 'orbital_period':
-        return combinedFilterFunc(acc, curr, 'orbital_period');
-      case 'diameter':
-        return combinedFilterFunc(acc, curr, 'diameter');
-      case 'rotation_period':
-        return combinedFilterFunc(acc, curr, 'rotation_period');
-      case 'surface_water':
-        return combinedFilterFunc(acc, curr, 'surface_water');
-      default:
-        return tableContent;
-      }
-    });
+    const filter = filtersList.reduce((acc, curr) => [
+      // ...acc,
+      ...combinedFilterFunc(curr, curr.column),
+    ], []);
     setCombinationFilter(filter);
-  }, [column, operator, numberValue]);
+  }, [filtersList]);
 
   useEffect(() => {
-    const filters = combinationFilter.length > 0 ? combinationFilter
-      .filter((planet) => planet.name.includes(search))
-      : planets
+    if (combinationFilter.length > 0) {
+      const filter = combinationFilter
         .filter((planet) => planet.name.includes(search));
-    setTableContent(filters);
-  }, [search]);
+      setTableContent(filter);
+    }
+    if (combinationFilter.length === 0) {
+      const filter1 = planets
+        .filter((planet) => planet.name.includes(search));
+      setTableContent(filter1);
+    }
+  }, [search, combinationFilter]);
 
   return (
     <DataPlanets.Provider
