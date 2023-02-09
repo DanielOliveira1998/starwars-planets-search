@@ -51,7 +51,7 @@ function DataProvider({ children }) {
         ? planets.filter((planet) => Number(planet[key]) > Number(curr.numberValue)
       && planet[key] !== 'unknown')
         : combinationFilter.filter(
-          (planet) => NUmber(planet[key]) > Number(curr.numberValue)
+          (planet) => Number(planet[key]) > Number(curr.numberValue)
       && planet[key] !== 'unknown',
         ));
     }
