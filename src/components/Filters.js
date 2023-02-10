@@ -4,6 +4,7 @@ import { DataPlanets } from '../context/DataPlanets';
 export default function Filters() {
   const [columnValue, setColumnValue] = useState([]);
   const [operatorValue, setOperatorValue] = useState([]);
+  const [newColumnValue, setNewColumnValue] = useState([]);
 
   useEffect(() => {
     setColumnValue([
@@ -21,8 +22,21 @@ export default function Filters() {
 
   const { search, handleSearch, handleColumn,
     handleNumberValue, handleOperator, setFiltersList, column,
-    operator,
-    numberValue, filtersList } = useContext(DataPlanets);
+    operator, numberValue, filtersList } = useContext(DataPlanets);
+
+  useEffect(() => {
+    const filterListValue = filtersList.map((item) => item.column);
+    const newColumn = columnValue.filter((a) => !filterListValue.includes(a));
+    setNewColumnValue(newColumn);
+  }, [filtersList]);
+
+  const filterClick = () => {
+    setFiltersList([...filtersList, {
+      column,
+      operator,
+      numberValue,
+    }]);
+  };
 
   return (
     <div>
@@ -43,9 +57,11 @@ export default function Filters() {
           data-testid="column-filter"
           onChange={ (e) => handleColumn(e) }
         >
-          {columnValue.map((item, index) => (
-            <option value={ item } key={ index }>{item}</option>
-          ))}
+          {newColumnValue.length === 0
+            ? columnValue.map((item, index) => (
+              <option value={ item } key={ index }>{item}</option>))
+            : newColumnValue.map((item, index) => (
+              <option value={ item } key={ index }>{item}</option>))}
         </select>
       </label>
       <label htmlFor="operador">
@@ -71,11 +87,7 @@ export default function Filters() {
       <button
         type="butto"
         data-testid="button-filter"
-        onClick={ () => setFiltersList([...filtersList, {
-          column,
-          operator,
-          numberValue,
-        }]) }
+        onClick={ filterClick }
       >
         Filtro
 
