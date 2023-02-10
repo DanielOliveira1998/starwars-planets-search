@@ -22,7 +22,7 @@ export default function Filters() {
 
   const { search, handleSearch, handleColumn,
     handleNumberValue, handleOperator, setFiltersList, column,
-    operator, numberValue, filtersList } = useContext(DataPlanets);
+    operator, numberValue, filtersList, setColumn } = useContext(DataPlanets);
 
   useEffect(() => {
     const filterListValue = filtersList.map((item) => item.column);
@@ -36,6 +36,7 @@ export default function Filters() {
       operator,
       numberValue,
     }]);
+    setColumn(newColumnValue[0]);
   };
 
   return (
@@ -92,6 +93,9 @@ export default function Filters() {
         Filtro
 
       </button>
+      <div>
+        {}
+      </div>
     </div>
   );
 }

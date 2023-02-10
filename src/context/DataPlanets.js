@@ -112,6 +112,7 @@ function DataProvider({ children }) {
         operator,
         numberValue,
         combinationFilter,
+        setColumn,
       } }
     >
       {children}
