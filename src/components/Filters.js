@@ -39,6 +39,10 @@ export default function Filters() {
     setColumn(newColumnValue[0]);
   };
 
+  const removeFilter = () => {
+    
+  }
+
   return (
     <div>
       <div>
@@ -94,7 +98,14 @@ export default function Filters() {
 
       </button>
       <div>
-        {}
+        {filtersList.map((item) => (
+          <div key={ item.column } data-testid="filter">
+            <p>{item.column}</p>
+            <p>{item.operator}</p>
+            <p>{item.numberValue}</p>
+            <button type="button" onClick={ (e) => removeFilter(e) }>X</button>
+          </div>
+        ))}
       </div>
     </div>
   );
