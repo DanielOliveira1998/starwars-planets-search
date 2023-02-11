@@ -2,8 +2,10 @@ import React, { useContext } from 'react';
 import { DataPlanets } from '../context/DataPlanets';
 
 export default function Table() {
-  const { planets, tableContent, filtersList } = useContext(DataPlanets);
-  const table = filtersList.length ? tableContent : planets;
+  const { planets, tableContent, filtersList, search } = useContext(DataPlanets);
+  const table = filtersList.length
+    ? tableContent.filter((planet) => planet.name.includes(search))
+    : planets.filter((planet) => planet.name.includes(search));
   return (
     <div>
       <table>

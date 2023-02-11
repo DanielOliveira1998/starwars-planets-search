@@ -78,15 +78,18 @@ function DataProvider({ children }) {
   }, [filtersList]);
 
   useEffect(() => {
+    console.log('entrou');
     if (combinationFilter.length > 0) {
       const filter = combinationFilter
         .filter((planet) => planet.name.includes(search));
       setTableContent(filter);
+      console.log('filtra combinationFilter');
     }
     if (combinationFilter.length === 0) {
       const filter1 = planets
         .filter((planet) => planet.name.includes(search));
       setTableContent(filter1);
+      console.log('filtra planets');
     }
   }, [search, combinationFilter]);
 
