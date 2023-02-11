@@ -39,9 +39,14 @@ export default function Filters() {
     setColumn(newColumnValue[0]);
   };
 
-  const removeFilter = () => {
-    
-  }
+  const removeFilter = ({ target }) => {
+    const remove = filtersList.filter((item) => item.column !== target.name);
+    setFiltersList(remove);
+  };
+
+  const removeAllFilters = () => {
+    setFiltersList([]);
+  };
 
   return (
     <div>
@@ -103,9 +108,23 @@ export default function Filters() {
             <p>{item.column}</p>
             <p>{item.operator}</p>
             <p>{item.numberValue}</p>
-            <button type="button" onClick={ (e) => removeFilter(e) }>X</button>
+            <button
+              type="button"
+              name={ item.column }
+              onClick={ (e) => removeFilter(e) }
+            >
+              X
+
+            </button>
           </div>
         ))}
+        <button
+          data-testid="button-remove-filters"
+          onClick={ () => removeAllFilters() }
+        >
+          Remove Filters
+
+        </button>
       </div>
     </div>
   );

@@ -2,8 +2,8 @@ import React, { useContext } from 'react';
 import { DataPlanets } from '../context/DataPlanets';
 
 export default function Table() {
-  const { planets, tableContent } = useContext(DataPlanets);
-  const table = tableContent.length > 0 ? tableContent : planets;
+  const { planets, tableContent, filtersList } = useContext(DataPlanets);
+  const table = filtersList.length ? tableContent : planets;
   return (
     <div>
       <table>

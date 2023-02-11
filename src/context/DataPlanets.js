@@ -45,41 +45,35 @@ function DataProvider({ children }) {
     fetchDataAndSetState();
   }, []);
 
-  const combinedFilterFunc = (curr, key) => {
+  const combinedFilterFunc = (acc, curr) => {
     if (curr.operator === 'maior que') {
-      return (combinationFilter.length === 0
-        ? planets.filter((planet) => Number(planet[key]) > Number(curr.numberValue)
-      && planet[key] !== 'unknown')
-        : combinationFilter.filter(
-          (planet) => Number(planet[key]) > Number(curr.numberValue)
-      && planet[key] !== 'unknown',
-        ));
+      return (acc.filter(
+        (planet) => Number(planet[curr.column]) > Number(curr.numberValue)
+      && planet[curr.column] !== 'unknown',
+      )
+      );
     }
     if (curr.operator === 'menor que') {
-      return (combinationFilter.length === 0
-        ? planets.filter((planet) => Number(planet[key]) < Number(curr.numberValue)
-      && planet[key] !== 'unknown')
-        : combinationFilter.filter(
-          (planet) => Number(planet[key]) < Number(curr.numberValue)
-      && planet[key] !== 'unknown',
-        ));
+      return (acc.filter(
+        (planet) => Number(planet[curr.column]) < Number(curr.numberValue)
+      && planet[curr.column] !== 'unknown',
+      )
+      );
     }
     if (curr.operator === 'igual a') {
-      return (combinationFilter.length === 0
-        ? planets.filter((planet) => Number(planet[key]) === Number(curr.numberValue)
-      && planet[key] !== 'unknown')
-        : combinationFilter.filter(
-          (planet) => Number(planet[key]) === Number(curr.numberValue)
-      && planet[key] !== 'unknown',
-        ));
+      return (acc.filter(
+        (planet) => Number(planet[curr.column]) === Number(curr.numberValue)
+      && planet[curr.column] !== 'unknown',
+      )
+      );
     }
   };
 
   useEffect(() => {
-    const filter = filtersList.reduce((_acc, curr) => [
+    const filter = filtersList.reduce((acc, curr) => [
       // ...acc,
-      ...combinedFilterFunc(curr, curr.column),
-    ], []);
+      ...combinedFilterFunc(acc, curr),
+    ], planets);
     setCombinationFilter(filter);
   }, [filtersList]);
 
