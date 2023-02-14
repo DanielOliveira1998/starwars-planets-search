@@ -13,6 +13,7 @@ function DataProvider({ children }) {
   const [operator, setOperator] = useState('maior que');
   const [numberValue, setNumberValue] = useState('0');
   const [tableContent, setTableContent] = useState([]);
+  const [plan, setPlan] = useState([]);
 
   const fetchDataAndSetState = async () => {
     setIsLoading(true);
@@ -55,15 +56,15 @@ function DataProvider({ children }) {
     }
     if (curr.operator === 'menor que') {
       return (acc.filter(
-        (planet) => Number(planet[curr.column]) < Number(curr.numberValue)
-      && planet[curr.column] !== 'unknown',
+        (planet) => Number(planet[curr.column]) < Number(curr.numberValue),
+      // && planet[curr.column] !== 'unknown',
       )
       );
     }
     if (curr.operator === 'igual a') {
       return (acc.filter(
-        (planet) => Number(planet[curr.column]) === Number(curr.numberValue)
-      && planet[curr.column] !== 'unknown',
+        (planet) => Number(planet[curr.column]) === Number(curr.numberValue),
+      // && planet[curr.column] !== 'unknown',
       )
       );
     }
@@ -71,7 +72,6 @@ function DataProvider({ children }) {
 
   useEffect(() => {
     const filter = filtersList.reduce((acc, curr) => [
-      // ...acc,
       ...combinedFilterFunc(acc, curr),
     ], planets);
     setCombinationFilter(filter);
@@ -93,6 +93,17 @@ function DataProvider({ children }) {
     }
   }, [search, combinationFilter]);
 
+  const sortPlanets = (plane) => {
+    if (plane === 'ASC') {
+      const sortASC = plan;
+      setPlan(sortASC);
+    }
+    if (plane === 'DESC') {
+      const sortDESC = plan;
+      setPlan(sortDESC);
+    }
+  };
+
   return (
     <DataPlanets.Provider
       value={ { planets,
@@ -110,6 +121,8 @@ function DataProvider({ children }) {
         numberValue,
         combinationFilter,
         setColumn,
+        sortPlanets,
+        plan,
       } }
     >
       {children}

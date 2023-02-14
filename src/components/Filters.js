@@ -20,7 +20,7 @@ export default function Filters() {
     ]);
   }, []);
 
-  const { search, handleSearch, handleColumn,
+  const { search, handleSearch, handleColumn, sortPlanets,
     handleNumberValue, handleOperator, setFiltersList, column,
     operator, numberValue, filtersList, setColumn } = useContext(DataPlanets);
 
@@ -118,6 +118,22 @@ export default function Filters() {
             </button>
           </div>
         ))}
+        <div>
+          <button
+            type="button"
+            onClick={ () => sortPlanets('ASC') }
+          >
+            ASC
+
+          </button>
+          <button
+            type="button"
+            onClick={ () => sortPlanets('DESC') }
+          >
+            DESC
+
+          </button>
+        </div>
         <button
           data-testid="button-remove-filters"
           onClick={ () => removeAllFilters() }

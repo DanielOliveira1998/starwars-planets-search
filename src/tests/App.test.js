@@ -4,6 +4,7 @@ import App from '../App';
 import DataProvider from '../context/DataPlanets';
 import apiData from './helper/apiData';
 import userEvent from '@testing-library/user-event';
+import { act } from 'react-dom/test-utils';
 
 describe('Testa tabela', () => {
   beforeEach(() => {
@@ -41,6 +42,12 @@ describe('Testa tabela', () => {
     });
     const tableTitle = screen.getAllByRole('columnheader');
     const tableContent = await screen.findAllByRole('cell');
+    const ascBtn = screen.getByRole('button', {
+      name: /asc/i
+    });
+    const descBtn = screen.getByRole('button', {
+      name: /desc/i
+    });
     expect(searchInput).toBeInTheDocument();
     expect(colunaTag).toBeInTheDocument();
     expect(colunaSelect).toBeInTheDocument();
@@ -48,6 +55,8 @@ describe('Testa tabela', () => {
     expect(operadorSelect).toBeInTheDocument();
     expect(valueInput).toBeInTheDocument();
     expect(filtroBtn).toBeInTheDocument();
+    expect(ascBtn).toBeInTheDocument();
+    expect(descBtn).toBeInTheDocument();
     expect(removeFiltersBtn).toBeInTheDocument();
     expect(tableTitle.length).toBe(13);
     expect(tableContent.length).toBe(130);
@@ -161,8 +170,8 @@ describe('Testa tabela', () => {
       name: /operator/i
     });
     const valueInput = screen.getByTestId('value-filter');
-    userEvent.selectOptions(colunaSelect, ['population']);
-    userEvent.selectOptions(operadorSelect, ['maior que']);
+    userEvent.selectOptions(colunaSelect, 'population');
+    userEvent.selectOptions(operadorSelect, 'maior que');
     userEvent.type(valueInput, 1000000);
     const filtroBtn = screen.getByRole('button', {
       name: /filtro/i
@@ -192,10 +201,10 @@ describe('Testa tabela', () => {
     userEvent.selectOptions(colunaSelect, ['diameter']);
     userEvent.selectOptions(operadorSelect, ['menor que']);
     userEvent.type(valueInput, 5000);
-    const filtroBtn = screen.getByRole('button', {
-      name: /filtro/i
-    })
+    const filtroBtn = screen.getByTestId('button-filter');
     userEvent.click(filtroBtn);
+    // waitFor(() => {
+    // })
   })
 
   test('Valida filtro igual a', async () => {
@@ -209,16 +218,38 @@ describe('Testa tabela', () => {
     const colunaSelect = screen.getByRole('combobox', {
       name: /coluna/i
     });
-    const operadorSelect = screen.getByRole('combobox', {
-      name: /operator/i
-    });
+    // const operadorSelect = screen.getByTestId('comparison-filter')
     const valueInput = screen.getByTestId('value-filter');
-    userEvent.selectOptions(colunaSelect, ['diameter']);
-    userEvent.selectOptions(operadorSelect, ['igual a']);
-    userEvent.type(valueInput, 5000);
+    userEvent.selectOptions(colunaSelect, 'population');
+    userEvent.selectOptions(screen.getByTestId('comparison-filter'), 'igual a');
+    userEvent.type(valueInput, 1000);
+    expect(screen.getByTestId('comparison-filter')).toBeInTheDocument();
     const filtroBtn = screen.getByRole('button', {
       name: /filtro/i
     })
     userEvent.click(filtroBtn);
+    // screen.logTestingPlaygroundURL();
+    await waitFor(() => {
+      expect(screen.queryByText('Tatooine')).toBeInTheDocument()
+    })
+    // expect(await screen.findAllByTestId('planet-name')[0].value).toBe('Dagobah');
+  })
+
+  test('Valida asc e desc', async () => {
+    render(
+      <DataProvider>
+        <App />)
+      </DataProvider>
+    )
+
+    const ascBtn = screen.getByRole('button', {
+      name: /asc/i
+    });
+    const descBtn = screen.getByRole('button', {
+      name: /desc/i
+    });
+
+    userEvent.click(ascBtn);
+    userEvent.click(descBtn);
   })
 })
